@@ -39,7 +39,7 @@ set(LIBS ${ament_cmake_LIBRARIES} ${angles_LIBRARIES} ${cmake_modules_LIBRARIES}
   ${rclcpp_LIBRARIES} ${sensor_msgs_LIBRARIES} ${tf2_LIBRARIES} ${ros2_time_LIBRARIES}
   ${ros2_console_LIBRARIES} ${Boost_LIBRARIES} ${Eigen_LIBRARIES})
 
-add_library(laser_geometry src/laser_geometry.cpp)
+add_library(laser_geometry SHARED src/laser_geometry.cpp)
 target_link_libraries(laser_geometry ${LIBS})
 
 if(BUILD_TESTING)

@@ -26,9 +26,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#include <stdlib.h>
 #include "laser_geometry/laser_geometry.h"
 #include <algorithm>
+#include <ros2_console/assert.hpp>
 #include <ros2_console/console.hpp>
 #include <ros2_time/time.hpp>
 #include <tf2/LinearMath/Transform.h>
@@ -254,7 +254,7 @@ const boost::numeric::ublas::matrix<double>& LaserProjection::getUnitVectors_(do
     }
 
     //check just in case
-    if (index_channel_idx >= 0) abort();  // Replaces ROS_ASSERT
+    ROS_ASSERT(index_channel_idx >= 0);
 
     for(unsigned int i = 0; i < cloud_out.points.size(); ++i)
     {
