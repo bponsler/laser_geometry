@@ -31,6 +31,7 @@
 #include <ros2_console/assert.hpp>
 #include <ros2_console/console.hpp>
 #include <ros2_time/time.hpp>
+#include <tf2_ros/buffer_interface.h>
 #include <tf2/LinearMath/Transform.h>
 #include <tf2/LinearMath/Scalar.h>
 
@@ -213,18 +214,16 @@ const boost::numeric::ublas::matrix<double>& LaserProjection::getUnitVectors_(do
     cloud_out.header.frame_id = target_frame;
 
     // Extract transforms for the beginning and end of the laser scan
-    ros2_time::Time start_time(scan_in.header.stamp);
-    ros2_time::Time end_time(scan_in.header.stamp);
-    if(!scan_in.ranges.empty()) end_time += ros2_time::Duration().fromSec( (scan_in.ranges.size()-1) * scan_in.time_increment);
+    tf2::TimePoint start_time = tf2_ros::fromMsg(scan_in.header.stamp);
+    tf2::TimePoint end_time = tf2_ros::fromMsg(scan_in.header.stamp);
+    if(!scan_in.ranges.empty()) end_time += tf2::durationFromSec((scan_in.ranges.size()-1) * scan_in.time_increment);
 
     geometry_msgs::msg::TransformStamped start_transform_msg ;
     geometry_msgs::msg::TransformStamped end_transform_msg ;
     tf2::Transform cur_transform ;
 
-    std::chrono::system_clock::time_point start_timepoint(std::chrono::seconds(start_time.toSec()));
-    start_transform_msg = tf.lookupTransform(target_frame, scan_in.header.frame_id, start_timepoint) ;
-    std::chrono::system_clock::time_point end_timepoint(std::chrono::seconds(end_time.toSec()));
-    end_transform_msg = tf.lookupTransform(target_frame, scan_in.header.frame_id, end_timepoint) ;
+    start_transform_msg = tf.lookupTransform(target_frame, scan_in.header.frame_id, start_time) ;
+    end_transform_msg = tf.lookupTransform(target_frame, scan_in.header.frame_id, end_time) ;
 
     // Convert messages to tf2 transforms
     tf2::Transform start_transform = tf2::Transform(tf2::Quaternion(start_transform_msg.transform.rotation.x,
@@ -678,17 +677,15 @@ const boost::numeric::ublas::matrix<double>& LaserProjection::getUnitVectors_(do
                                                          double range_cutoff,
                                                          int channel_options)
   {
-    ros2_time::Time start_time(scan_in.header.stamp);
-    ros2_time::Time end_time(scan_in.header.stamp);
-    if(!scan_in.ranges.empty()) end_time += ros2_time::Duration ().fromSec ( (scan_in.ranges.size()-1) * scan_in.time_increment);
+    tf2::TimePoint start_time = tf2_ros::fromMsg(scan_in.header.stamp);
+    tf2::TimePoint end_time = tf2_ros::fromMsg(scan_in.header.stamp);
+    if(!scan_in.ranges.empty()) end_time += tf2::durationFromSec( (scan_in.ranges.size()-1) * scan_in.time_increment);
 
     geometry_msgs::msg::TransformStamped start_transform_msg ;
     geometry_msgs::msg::TransformStamped end_transform_msg ;
     
-    std::chrono::system_clock::time_point start_timepoint(std::chrono::seconds(start_time.toSec()));
-    start_transform_msg = tf.lookupTransform (target_frame, scan_in.header.frame_id, start_timepoint);
-    std::chrono::system_clock::time_point end_timepoint(std::chrono::seconds(end_time.toSec()));
-    end_transform_msg = tf.lookupTransform (target_frame, scan_in.header.frame_id, end_timepoint);
+    start_transform_msg = tf.lookupTransform (target_frame, scan_in.header.frame_id, start_time);
+    end_transform_msg = tf.lookupTransform (target_frame, scan_in.header.frame_id, end_time);
 
     // Convert messages to tf2 transforms
     tf2::Transform start_transform = tf2::Transform(tf2::Quaternion(start_transform_msg.transform.rotation.x,
@@ -733,14 +730,14 @@ const boost::numeric::ublas::matrix<double>& LaserProjection::getUnitVectors_(do
                                                          double range_cutoff,
                                                          int channel_options)
   {
-    ros2_time::Time start_time(scan_in.header.stamp);
-    ros2_time::Time end_time(scan_in.header.stamp);
-    if(!scan_in.ranges.empty()) end_time += ros2_time::Duration ().fromSec ( (scan_in.ranges.size()-1) * scan_in.time_increment);
+    tf2::TimePoint start_time = tf2_ros::fromMsg(scan_in.header.stamp);
+    tf2::TimePoint end_time = tf2_ros::fromMsg(scan_in.header.stamp);
+    if(!scan_in.ranges.empty()) end_time += tf2::durationFromSec( (scan_in.ranges.size()-1) * scan_in.time_increment);
 
-    std::chrono::system_clock::time_point start_timepoint(std::chrono::seconds(start_time.toSec()));
-    geometry_msgs::msg::TransformStamped start_transform = tf.lookupTransform (target_frame, scan_in.header.frame_id, start_timepoint);
-    std::chrono::system_clock::time_point end_timepoint(std::chrono::seconds(end_time.toSec()));
-    geometry_msgs::msg::TransformStamped end_transform = tf.lookupTransform (target_frame, scan_in.header.frame_id, end_timepoint);
+    geometry_msgs::msg::TransformStamped start_transform = tf.lookupTransform (
+        target_frame, scan_in.header.frame_id, start_time);
+    geometry_msgs::msg::TransformStamped end_transform = tf.lookupTransform (
+        target_frame, scan_in.header.frame_id, end_time);
 
     tf2::Quaternion quat_start(start_transform.transform.rotation.x,
                                start_transform.transform.rotation.y,
