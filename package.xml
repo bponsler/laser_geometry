@@ -39,7 +39,11 @@
   <exec_depend>tf2</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>ros2_console</exec_depend>
-  
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>ament_cmake_nose</test_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

@@ -43,8 +43,11 @@ add_library(laser_geometry SHARED src/laser_geometry.cpp)
 target_link_libraries(laser_geometry ${LIBS})
 
 if(BUILD_TESTING)
-  ament_add_gtest(projection_test test/projection_test.cpp)
-  target_link_libraries(projection_test laser_geometry ${LIBS})
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+  
+  #ament_add_gtest(projection_test test/projection_test.cpp)
+  #target_link_libraries(projection_test laser_geometry ${LIBS})
 
   ament_add_nose_test(${PROJECT_NAME}_projection_nose_test test/projection_test.py)
 endif()
