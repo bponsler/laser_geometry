@@ -30,7 +30,6 @@
 #include <algorithm>
 #include <ros2_console/assert.hpp>
 #include <ros2_console/console.hpp>
-#include <ros2_time/time.hpp>
 #include <tf2_ros/buffer_interface.h>
 #include <tf2/LinearMath/Transform.h>
 #include <tf2/LinearMath/Scalar.h>
