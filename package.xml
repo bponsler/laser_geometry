@@ -17,7 +17,7 @@
 
   <url>http://ros.org/wiki/laser_geometry</url>
 
-  <buildtool_depend>ament</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_python_cmake</buildtool_depend>
 
   <build_depend>angles</build_depend>
