@@ -26,14 +26,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#include "laser_geometry/laser_geometry.h"
 #include <algorithm>
-#include <ros2_console/assert.hpp>
-#include <ros2_console/console.hpp>
-#include <tf2_ros/buffer_interface.h>
-#include <tf2/LinearMath/Transform.h>
-#include <tf2/LinearMath/Scalar.h>
+#include <assert.h>
 
+#include "laser_geometry/laser_geometry.h"
+#include "rcutils/logging_macros.h"
+
+#include "tf2_ros/buffer.h"
+#include "tf2/LinearMath/Transform.h"
+#include "tf2/LinearMath/Quaternion.h"
+#include "tf2/utils.h"
+#include "tf2/transform_datatypes.h"
 
 namespace laser_geometry
 {
@@ -119,7 +122,7 @@ namespace laser_geometry
         //double x = cloud_out.points[count].x;
         //double y = cloud_out.points[count].y;
         //if(x*x + y*y < scan_in.range_min * scan_in.range_min){
-        //  ROS_INFO("(%.2f, %.2f)", cloud_out.points[count].x, cloud_out.points[count].y);
+        //  RCUTILS_LOG_INFO("(%.2f, %.2f)", cloud_out.points[count].x, cloud_out.points[count].y);
         //}
 
         // Save the original point index
@@ -252,7 +255,7 @@ const boost::numeric::ublas::matrix<double>& LaserProjection::getUnitVectors_(do
     }
 
     //check just in case
-    ROS_ASSERT(index_channel_idx >= 0);
+    assert(index_channel_idx >= 0);
 
     for(unsigned int i = 0; i < cloud_out.points.size(); ++i)
     {
@@ -311,7 +314,7 @@ const boost::numeric::ublas::matrix<double>& LaserProjection::getUnitVectors_(do
     // Check if our existing co_sine_map is valid
     if (co_sine_map_.rows () != (int)n_pts || angle_min_ != scan_in.angle_min || angle_max_ != scan_in.angle_max )
     {
-      ROS_DEBUG ("[projectLaser] No precomputed map given. Computing one.");
+      RCUTILS_LOG_DEBUG ("[projectLaser] No precomputed map given. Computing one.");
       co_sine_map_ = Eigen::ArrayXXd (n_pts, 2);
       angle_min_ = scan_in.angle_min;
       angle_max_ = scan_in.angle_max;
