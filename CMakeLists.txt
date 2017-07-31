@@ -14,7 +14,6 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
-find_package(ros2_console REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS system thread)
 
@@ -22,30 +21,30 @@ find_package(Eigen REQUIRED)
 
 ament_python_install_package(${PROJECT_NAME})
 
-set(INCLUDE_DIRS include ${ament_cmake_INCLUDE_DIRS} ${angles_INCLUDE_DIRS}
-  ${cmake_modules_INCLUDE_DIRS} ${rclcpp_INCLUDE_DIRS} ${sensor_msgs_INCLUDE_DIRS}
-  ${tf2_INCLUDE_DIRS} ${tf2_ros_INCLUDE_DIRS} ${ros2_console_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
-include_directories(${INCLUDE_DIRS})
-
-set(LIBRARY_DIRS ${ament_cmake_LIBRARY_DIRS} ${angles_LIBRARY_DIRS}
-  ${cmake_modules_LIBRARY_DIRS} ${rclcpp_LIBRARY_DIRS} ${sensor_msgs_LIBRARY_DIRS}
-  ${tf2_LIBRARY_DIRS} ${tf2_ros_LIBRARY_DIRS} ${ros2_console_LIBRARY_DIRS}
-  ${Boost_LIBRARY_DIRS} ${Eigen_LIBRARY_DIRS})
-
-link_directories(${LIBRARY_DIRS})
-
-set(LIBS ${ament_cmake_LIBRARIES} ${angles_LIBRARIES} ${cmake_modules_LIBRARIES}
-  ${rclcpp_LIBRARIES} ${sensor_msgs_LIBRARIES} ${tf2_LIBRARIES} ${tf2_ros_LIBRARIES}
-  ${ros2_console_LIBRARIES} ${Boost_LIBRARIES} ${Eigen_LIBRARIES})
+include_directories(include)
 
 add_library(laser_geometry SHARED src/laser_geometry.cpp)
-target_link_libraries(laser_geometry ${LIBS})
+
+ament_target_dependencies(laser_geometry
+  "rclcpp"
+  "sensor_msgs"
+  "tf2"
+  "tf2_ros")
+
+target_include_directories(laser_geometry
+  PUBLIC ${angles_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS}
+)
+
+target_link_libraries(laser_geometry
+  ${angles_LIBRARIES}
+  ${Boost_LIBRARIES}
+  ${Eigen_LIBRARIES}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
-  
+
   #ament_add_gtest(projection_test test/projection_test.cpp)
   #target_link_libraries(projection_test laser_geometry ${LIBS})
 
@@ -69,8 +68,6 @@ ament_export_dependencies(rclcpp)
 ament_export_dependencies(sensor_msgs)
 ament_export_dependencies(tf2)
 ament_export_dependencies(tf2_ros)
-ament_export_dependencies(ros2_console)
-ament_export_include_directories(${INCLUDE_DIRS})
-ament_export_libraries(laser_geometry ${LIBS})
+ament_export_libraries(laser_geometry)
 
 ament_package()
