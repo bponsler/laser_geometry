@@ -33,9 +33,9 @@
 #include <map>
 #include <iostream>
 #include <sstream>
+#include <mutex>
 
 #include "boost/numeric/ublas/matrix.hpp"
-#include "boost/thread/mutex.hpp"
 
 #include <tf2/buffer_core.h>
 
@@ -305,7 +305,7 @@ namespace laser_geometry
       float angle_min_;
       float angle_max_;
       Eigen::ArrayXXd co_sine_map_;
-      boost::mutex guv_mutex_;
+      std::mutex guv_mutex_;
     };
 
 }

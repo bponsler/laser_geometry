@@ -156,7 +156,7 @@ namespace laser_geometry
 
 const boost::numeric::ublas::matrix<double>& LaserProjection::getUnitVectors_(double angle_min, double angle_max, double angle_increment, unsigned int length)
   {
-    boost::mutex::scoped_lock guv_lock(this->guv_mutex_);
+    std::unique_lock<std::mutex>  guv_lock(this->guv_mutex_);
 
     //construct string for lookup in the map
     std::stringstream anglestring;
