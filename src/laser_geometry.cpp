@@ -45,7 +45,7 @@ namespace laser_geometry
     LaserProjection::projectLaser_ (const sensor_msgs::msg::LaserScan& scan_in, sensor_msgs::msg::PointCloud & cloud_out, double range_cutoff,
                                    bool preservative, int mask)
   {
-    boost::numeric::ublas::matrix<double> ranges(2, scan_in.ranges.size());
+    Eigen::MatrixXd ranges(2, scan_in.ranges.size());
 
     // Fill the ranges matrix
     for (unsigned int index = 0; index < scan_in.ranges.size(); index++)
@@ -56,7 +56,7 @@ namespace laser_geometry
 
     //Do the projection
     //    NEWMAT::Matrix output = NEWMAT::SP(ranges, getUnitVectors(scan_in.angle_min, scan_in.angle_max, scan_in.angle_increment));
-    boost::numeric::ublas::matrix<double> output = element_prod(ranges, getUnitVectors_(scan_in.angle_min, scan_in.angle_max, scan_in.angle_increment, scan_in.ranges.size()));
+    Eigen::MatrixXd output = ranges * getUnitVectors_(scan_in.angle_min, scan_in.angle_max, scan_in.angle_increment, scan_in.ranges.size());
 
     //Stuff the output cloud
     cloud_out.header = scan_in.header;
@@ -154,20 +154,20 @@ namespace laser_geometry
       cloud_out.channels[d].values.resize(count);
   };
 
-const boost::numeric::ublas::matrix<double>& LaserProjection::getUnitVectors_(double angle_min, double angle_max, double angle_increment, unsigned int length)
+const Eigen::MatrixXd& LaserProjection::getUnitVectors_(double angle_min, double angle_max, double angle_increment, unsigned int length)
   {
     std::unique_lock<std::mutex>  guv_lock(this->guv_mutex_);
 
     //construct string for lookup in the map
     std::stringstream anglestring;
     anglestring <<angle_min<<","<<angle_max<<","<<angle_increment<<","<<length;
-    std::map<std::string, boost::numeric::ublas::matrix<double>* >::iterator it;
+    std::map<std::string, Eigen::MatrixXd* >::iterator it;
     it = unit_vector_map_.find(anglestring.str());
     //check the map for presense
     if (it != unit_vector_map_.end())
       return *((*it).second);     //if present return
 
-    boost::numeric::ublas::matrix<double> * tempPtr = new boost::numeric::ublas::matrix<double>(2,length);
+    Eigen::MatrixXd * tempPtr = new Eigen::MatrixXd(2,length);
     for (unsigned int index = 0;index < length; index++)
       {
         (*tempPtr)(0,index) = cos(angle_min + (double) index * angle_increment);
@@ -182,7 +182,7 @@ const boost::numeric::ublas::matrix<double>& LaserProjection::getUnitVectors_(do
 
   LaserProjection::~LaserProjection()
   {
-    std::map<std::string, boost::numeric::ublas::matrix<double>*>::iterator it;
+    std::map<std::string, Eigen::MatrixXd*>::iterator it;
     it = unit_vector_map_.begin();
     while (it != unit_vector_map_.end())
       {
