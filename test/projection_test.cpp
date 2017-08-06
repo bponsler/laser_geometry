@@ -77,7 +77,7 @@ sensor_msgs::msg::LaserScan build_constant_scan(double range, double intensity,
 class TestProjection : public laser_geometry::LaserProjection
 {
 public:
-  const boost::numeric::ublas::matrix<double>& getUnitVectors(double angle_min,
+  const Eigen::MatrixXd& getUnitVectors(double angle_min,
                                                               double angle_max,
                                                               double angle_increment,
                                                               unsigned int length)
@@ -91,7 +91,7 @@ void test_getUnitVectors(double angle_min, double angle_max, double angle_increm
   double tolerance = 1e-12;
   TestProjection projector;  
   
-  const boost::numeric::ublas::matrix<double> & mat = projector.getUnitVectors(angle_min, angle_max, angle_increment, length);
+  const Eigen::MatrixXd & mat = projector.getUnitVectors(angle_min, angle_max, angle_increment, length);
   
   
 

@@ -34,8 +34,8 @@
 #include <iostream>
 #include <sstream>
 #include <mutex>
-
-#include "boost/numeric/ublas/matrix.hpp"
+#include <Eigen/Core>
+#include <Eigen/Dense>
 
 #include <tf2/buffer_core.h>
 
@@ -43,7 +43,6 @@
 #include "sensor_msgs/msg/point_cloud.hpp"
 #include "sensor_msgs/msg/point_cloud.hpp"
 
-#include <Eigen/Core>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
 namespace laser_geometry
@@ -253,7 +252,7 @@ namespace laser_geometry
        * it is left protected so that test code can evaluate it
        * appropriately.
        */
-      const boost::numeric::ublas::matrix<double>& getUnitVectors_(double angle_min,
+      const Eigen::MatrixXd& getUnitVectors_(double angle_min,
                                                                    double angle_max,
                                                                    double angle_increment,
                                                                    unsigned int length);
@@ -301,7 +300,7 @@ namespace laser_geometry
                                             int channel_options);
 
       //! Internal map of pointers to stored values
-      std::map<std::string,boost::numeric::ublas::matrix<double>* > unit_vector_map_;
+      std::map<std::string, Eigen::MatrixXd* > unit_vector_map_;
       float angle_min_;
       float angle_max_;
       Eigen::ArrayXXd co_sine_map_;

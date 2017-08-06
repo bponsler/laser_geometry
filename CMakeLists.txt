@@ -15,9 +15,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 
-find_package(Boost REQUIRED COMPONENTS system thread)
-
-find_package(Eigen REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 ament_python_install_package(${PROJECT_NAME})
 
@@ -32,13 +30,11 @@ ament_target_dependencies(laser_geometry
   "tf2_ros")
 
 target_include_directories(laser_geometry
-  PUBLIC ${angles_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS}
+  PUBLIC ${angles_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS}
 )
 
 target_link_libraries(laser_geometry
   ${angles_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${Eigen_LIBRARIES}
 )
 
 if(BUILD_TESTING)
